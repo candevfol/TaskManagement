@@ -16,4 +16,4 @@ const Task = new mongoose.Schema({
 
 const TaskModel = mongoose.model("Task", Task);
 
-export {TaskModel}
+export default TaskModel

@@ -1,18 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
-const Board = new mongoose.Schema({
+const Board = new Schema({
   name: {
     type: String,
   },
   description: {
     type: String,
   },
-  tasks: {
-    type: Schema.Types.ObjectId,
-    ref: "Task",
-  },
+  tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 });
 
-const BoardModel = mongoose.model("Board", Board);
+const BoardModel = model("Board", Board);
 
-export { BoardModel };
+export default BoardModel;
