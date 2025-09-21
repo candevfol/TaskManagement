@@ -25,36 +25,44 @@ router.post('/:id', async (req, res) => {
   }
 });
 
-// router.get('/:id', async(req, res)=> {
-//     try{    
-//         const id = req.params.id;
+router.get('/:id', async(req, res)=> {
+    try{    
+        const boardId = req.params.id;
+        const status = req.query.status;
 
-//         const response = await BoardModel.findById(id);
-//         if(!response)res.send({message: "Couldnot find"});
-//         res.send({board: response});
-//     }
-//     catch(e){
-//         console.error(`Error occured ${e}`);
-//     }
-// })
 
-// router.put('/:id', async(req,res) => {
-//     try{
-//         const id = req.params.id;
-//         const {name, description}= req.body;
+        if(!boardId || !(status==="todo" || status==="progress" || status==="completed" || status==="notdo")){
+          return res.status(401).send({error:"board not found OR status given is incorrect"});
+        }
+        
+        const boards =await BoardModel.findById(boardId).populate("tasks");
+        const modifiedBoards = boards.tasks.filter((task)=> {
+          return task.status === status
+      });
+      return res.send({board: modifiedBoards});
+    }
+    catch(e){
+        console.error(`Error occured ${e}`);
+    }
+})
 
-//         const response = await BoardModel.findByIdAndUpdate(id, {
-//             ...(name !== undefined && { name }),
-//             ...(description !== undefined && { description })
-//           },{new:true})
-//         res.send({board: response, msg:"Update board success"});
-//     }
-//     catch(e){
-//         res.send({Error: e});
-//         console.error(e);
+router.put('/:id', async(req,res) => {
+    try{
+        const id = req.params.id;
+        const {name, description}= req.body;
 
-//     }
-// })
+        const response = await BoardModel.findByIdAndUpdate(id, {
+            ...(name !== undefined && { name }),
+            ...(description !== undefined && { description })
+          },{new:true})
+        res.send({board: response, msg:"Update board success"});
+    }
+    catch(e){
+        res.send({Error: e});
+        console.error(e);
+
+    }
+})
 
 router.put('/:id', async(req,res) => {
     try{
